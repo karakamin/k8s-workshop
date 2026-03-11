@@ -22,7 +22,7 @@ CMD ["node", "dist/index.js"]
 
 ### 1. dockerfile 優化
 
-```
+```dockerfile
 # 階段一：建置階段 (Builder)
 FROM node:20-alpine AS builder
 WORKDIR /app
@@ -71,7 +71,7 @@ CMD ["node", "dist/index.js"]
    ```powershell
    podman build --platform linux/amd64 -t my-node-app:amd64 .
    ```
-   <img width="1117" height="266" alt="image" src="https://github.com/user-attachments/assets/f12874a2-427c-4fbe-bd21-3d7381b1ed47" />
+   <img width="1117" height="266" alt="image" src="https://github.com/user-attachments/assets/8c9b6c08-b0e3-4316-b0b1-712127bfb3dc" />
 
  - arm64
 
@@ -82,4 +82,5 @@ CMD ["node", "dist/index.js"]
    ```powershell
    podman build --platform linux/arm64 -t my-node-app:arm64 .
    ```
-   <img width="1184" height="354" alt="image" src="https://github.com/user-attachments/assets/9bed5ac8-0abe-46a0-8666-83332c8d4755" />
+
+   <img width="1184" height="354" alt="image" src="https://github.com/user-attachments/assets/a28d0295-2184-4976-abb0-eed0302de539" />
