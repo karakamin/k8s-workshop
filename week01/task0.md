@@ -66,21 +66,68 @@ CMD ["node", "dist/index.js"]
     ```
 ### 2. 運作
 
-- 以下使用 Podman 進行
- - amd64
+以下使用 Podman 進行
+- Podman 多架構下，要先建立 manifest
    ```powershell
-   podman build --platform linux/amd64 -t my-node-app:amd64 .
+   podman manifest create myapp
    ```
-   <img width="1117" height="266" alt="image" src="https://github.com/user-attachments/assets/8c9b6c08-b0e3-4316-b0b1-712127bfb3dc" />
-
- - arm64
-
+  - 執行 build ：
    ```powershell
-   # 要先讓 x86 電腦可以執行 ARM 容器，安裝 QEMU emulator
-   podman run --privileged --rm docker.io/tonistiigi/binfmt --install all
+   podman build --platform linux/amd64 --manifest myapp .
+   podman build --platform linux/arm64 --manifest myapp .
    ```
-   ```powershell
-   podman build --platform linux/arm64 -t my-node-app:arm64 .
+ - 執行完成後，先確認 manifest 是否建立成功
+   ```
+   podman manifest inspect myapp
    ```
 
-   <img width="1184" height="354" alt="image" src="https://github.com/user-attachments/assets/a28d0295-2184-4976-abb0-eed0302de539" />
+   成功會有類似以下的字串
+     ```JSON
+     {
+      "manifests": [
+        {
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          }
+        },
+        {
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux"
+          }
+        }
+      ]
+    }
+   ```
+   
+ - 查看本地 image
+   通常會有，localhost/myapp，這是一個 manifest list
+   ```powershell
+   podman images
+   ```
+ - 最後執行 container
+   Podman 會自動選適合 CPU 的架構
+   ```powershell
+   podman run -p 8080:80 localhost/myapp
+   ```
+
+### 其他紀錄
+最初的練習未使用 --manifest，而是分開執行：
+- amd64
+ ```powershell
+ podman build --platform linux/amd64 -t my-node-app:amd64 .
+ ```
+ <img width="1117" height="266" alt="image" src="https://github.com/user-attachments/assets/8c9b6c08-b0e3-4316-b0b1-712127bfb3dc" />
+
+- arm64
+
+ ```powershell
+ # 要先讓 x86 電腦可以執行 ARM 容器，安裝 QEMU emulator
+ podman run --privileged --rm docker.io/tonistiigi/binfmt --install all
+ ```
+ ```powershell
+ podman build --platform linux/arm64 -t my-node-app:arm64 .
+ ```
+
+ <img width="1184" height="354" alt="image" src="https://github.com/user-attachments/assets/a28d0295-2184-4976-abb0-eed0302de539" />
